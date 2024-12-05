@@ -1,0 +1,8 @@
+- name: Install required packages
+  yum: 
+    name: "{{ item }}"
+    state: present
+  loop:
+    - jave-11-openjdk
+    - postgresql10-server
+    - nginx

@@ -1,0 +1,10 @@
+- name: Ansible-based Automation for DevOps Tool Setup and Configuration
+  hosts: Ubuntu
+  become: yes
+  roles:
+    - docker
+    - nexus
+    - jenkins
+    - gitlab
+    - sonarqube
+

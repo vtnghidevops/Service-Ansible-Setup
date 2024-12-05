@@ -1,0 +1,43 @@
+- name: Download SonarQube
+  get_url:
+    url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.0.43852.zip
+    dest: /tmp/sonarqube.zip
+
+- name: Extract SonarQube
+  unarchive:
+    src: /tmp/sonarqube.zip
+    dest: /opt/
+    remote_src: yes
+    creates: /opt/sonarqube-8.9.0.43852 # noi rang neu co file nay roi thi khoi
+
+- name: Configure Systemd Service
+  template:
+    src: sonarqube.service.j2
+    dest: /etc/systemd/system/sonarqube.service
+
+- name: Enable Sonarqube
+  systemd:
+    name: sonarqube
+    enable: yes
+
+- name: Configure firewall on port 9000
+  shell: firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="0.0.0.0/0" port protocol="tcp" port="9000" accept'
+
+- name: Reload the firewall
+  command: firewall-cmd --reload
+
+
+- name: Initialize Database
+  command: sudo -u postgres psql -c "CREATE DATABASE sonar OWNER sonar";
+
+- name: Set username and passwd
+  template:
+    src: sonar.properties.j2
+    dest: /opt/sonarqube/conf/sonar.properties
+
+
+- name: Start Sonarqube 
+  service:
+    name: sonarqube
+    state: started
+

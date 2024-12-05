@@ -1,0 +1,24 @@
+- name: Add Jenkins Software Repository
+  shell: |
+    wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+    rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+  become: yes
+
+- name: Install Jenkins GPG key
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat/jenkins.io.key
+  become: yes
+
+- name: Set firewalld to allow Jenkins
+  firewalld:
+    permanent: true
+    port: 8080/tcp
+    state: enabled
+    zone: public
+  become: yes
+
+- name: Reload firewall
+  firewalld:
+    state: reloaded
+  become: yes

@@ -1,0 +1,31 @@
+
+- name : Download nexus
+  get_url:
+    src: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+    dest: /tmp/nexus.tar.gz
+
+
+- name: Extract Nexus
+  unarchive:
+    src: /tmp/nexus.tar.gz
+    dest: /opt/
+    remote_src: yes # Cho biet la file nexus da download tren may minh can cai roi
+
+
+- name: Create Nexus service file from template
+  template:
+    src: nextus.service.j2
+    dest: /etc/systemd/system/nexus.service
+
+- name: Start and Enable Nexus
+  service:
+    name: nexus
+    state: started
+    enabled: yes
+
+- name: Configure firewalld  allow connection on port 8081 and reload
+  shell: |
+    firewall-cmd --permanent --add-port=8081/tcp
+    firewall-cmd --reload
+
+

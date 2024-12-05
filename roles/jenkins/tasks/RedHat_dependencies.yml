@@ -1,0 +1,26 @@
+- name: Install necessary packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - java-11-openjdk
+  ignore_errors: yes
+  become: yes
+
+- name: Update apt after adding Jenkins repo
+  yum:
+    update_cache: yes
+  become: yes
+
+- name: Install Jenkins
+  yum:
+    name: jenkins
+    state: present
+  become: yes
+
+- name: Start and Enable Jenkins service
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+  become: yes

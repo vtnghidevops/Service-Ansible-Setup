@@ -1,0 +1,26 @@
+# Open SSH server daemon if no enabled
+- name: Make sure SSH is work
+  service:
+    name: sshd
+    state: started
+
+# Check active firewalld
+- name: Check if firewalld is running
+  command: systemctl is-active firewalld
+  register: firewalld_status
+
+# add service http/https
+- name: Enable HTTP and HTTPS services in firewalld
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop:
+    - http
+    - https
+  when: firewalld_status.stdout == 'active'
+
+# Reload firewalld
+- name: Reload firewalld 
+  command: systemctl reload firewalld
+  when: firewalld_status.stdout == 'active'

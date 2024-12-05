@@ -1,0 +1,4 @@
+---
+# handlers file for gitlab
+- name: Reload gitlab after change from configure
+  shell: gitlab-ctl restart

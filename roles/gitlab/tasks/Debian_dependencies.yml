@@ -1,0 +1,39 @@
+# Install gitlab
+- name: Install required packages for GitLab
+  apt:
+    name : "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - policycoreutils-python-utils
+    - openssh-server
+    - perl
+    - git
+
+# Install postfix
+- name: Install postfix
+  apt:
+    name: postfix
+    state: present
+
+- name: Enable and Start Postfix
+  service:
+    name: postfix
+    state: started
+    enabled: yes
+
+# Add the gitlab package repository and install the package
+- name: Add gitlab repository
+  shell: curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh | sudo bash
+
+# Install gitlab ee
+- name: Install gitlab-ee
+  apt:
+    name: gitlab-ee
+    state: present
+
+
+
+
+- name: Reconfigure Gitlab with default 
+  shell: gitlab-ctl reconfigure

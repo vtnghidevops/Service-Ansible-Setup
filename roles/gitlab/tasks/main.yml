@@ -1,0 +1,13 @@
+---
+# Common Task
+- name: Include common tasks for gitlab
+  include_tasks: common.yml
+
+# Specific task for OS
+- name: Include OS-specific tasks for gitlab
+  include_tasks: "{{ ansible_os_family }}_dependencies.yml"
+
+
+
+
+

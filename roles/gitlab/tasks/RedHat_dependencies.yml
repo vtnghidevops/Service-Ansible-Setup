@@ -1,0 +1,42 @@
+# Install gitlab
+- name: Install required packages for GitLab
+  yum:
+    name : "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - policycoreutils-python-utils
+    - openssh-server
+    - perl
+    - git
+
+# Install postfix
+- name: Install postfix
+  yum:
+    name: postfix
+    state: present
+
+- name: Enable and Start Postfix
+  service:
+    name: postfix
+    state: started
+    enabled: yes
+
+# Add the gitlab package repository and install the package
+- name: Add gitlab repository
+  shell: curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh | sudo bash
+
+# Install gitlab ee
+- name: Install gitlab-ee
+  yum:
+    name: gitlab-ee
+    state: present
+
+# Configure Gitlab 
+- name: Configure Gitlab
+  template:
+    src: gitlab.rb.j2
+    dest: /etc/gitlab/gitlab.rb
+
+- name: Reconfigure Gitlab  
+  shell: gitlab-ctl reconfigure

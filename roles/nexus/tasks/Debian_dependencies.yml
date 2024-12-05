@@ -1,0 +1,9 @@
+# tasks file for nexus
+name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - java-1.8.0-openjdk
+    - java-1.8.0-openjdk-devel
+
